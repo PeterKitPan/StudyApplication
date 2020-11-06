@@ -1,0 +1,124 @@
+apply plugin: 'com.android.application'
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    compileSdkVersion 29
+
+    signingConfigs {
+        release {//发布版本的签名配置
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+        debug {//调试版本的签名配置
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.test.packing"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        flavorDimensions "versionCode"
+        /**添加多 dex分包支持*/
+        multiDexEnabled true
+    }
+
+    dexOptions{
+        preDexLibraries = false
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Zipalign优化
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG","false"
+            debuggable false
+            signingConfig signingConfigs.release
+            jniDebuggable false
+
+            // 自定义输出配置--低于3.0的IDE配置
+//            applicationVariants.all { variant ->
+//                variant.outputs.each { output ->
+//                    def outputFile = output.outputFile
+//                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//                        // 输出apk名称为wenyu_v1.0_渠道名_日期.apk
+//                        def fileName = "wenyu_v${defaultConfig.versionName}_${variant.productFlavors[0].name}_${getNowTime()}.apk"
+//                        output.outputFile = new File(outputFile.parent, fileName)
+//                        output.outputFile = new File(outputFile.parent, fileName)
+//                    }
+//                }
+//            }
+            //高于3.0的配置
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    // 自定义输出路径(这样就修改了默认路径，不能直接安装apk了)
+                    // variant.getPackageApplication().outputDirectory = new File(project.rootDir.absolutePath + File.separator + "outputs")
+                    // 自定义文件名{示例：AppName-Flavor-debug-v1.0.0_201807301409}
+                    outputFileName = "wenyu_v${defaultConfig.versionName}_${variant.productFlavors[0].name}_${getNowTime()}.apk"
+                }
+            }
+        }
+
+        debug {
+            // 混淆
+            minifyEnabled false
+            // Zipalign优化
+            zipAlignEnabled false
+            // 移除无用的resource文件
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release //此处为选择在debug运行时一样有release签名，可以方便测试部分功能
+            jniDebuggable true
+        }
+    }
+    flavorDimensions 'market'
+    productFlavors {
+        baidu {
+            manifestPlaceholders = [CHANNEL_VALUE: "baidu"]
+            dimension 'market'
+        }
+        google {
+            manifestPlaceholders = [CHANNEL_VALUE: "google"]
+            dimension 'market'
+        }
+        self {
+            manifestPlaceholders = [CHANNEL_VALUE: "self"]
+            dimension 'market'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha03'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+}
+//获取时间戳
+def getNowTime() {
+    def date = new Date()
+    def now = date.format('yyyyMMdd')
+    return now
+}

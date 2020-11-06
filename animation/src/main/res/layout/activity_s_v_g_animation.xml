@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#33333333"
+    android:orientation="vertical"
+    tools:context=".SVGAnimationActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="静态SVG" />
+
+    <ImageView
+        android:id="@+id/iv_static"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/androidicon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="动态SVG" />
+
+    <ImageView
+        android:id="@+id/iv_live"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        app:srcCompat="@drawable/sun_system" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="Lottie" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/iv_lottie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!--<com.airbnb.lottie.LottieAnimationView-->
+    <!--android:id="@+id/iv_lottie"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:lottie_autoPlay="true"-->
+    <!--app:lottie_fileName="hello-world.json"-->
+    <!--app:lottie_loop="true" />-->
+
+</LinearLayout>

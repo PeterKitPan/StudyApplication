@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundImageView">
+        <attr name="borderRadius" format="dimension" />
+        <attr name="borderRadius_top_left" format="dimension"/>
+        <attr name="borderRadius_top_right" format="dimension"/>
+        <attr name="borderRadius_bottom_left" format="dimension"/>
+        <attr name="borderRadius_bottom_right" format="dimension"/>
+    </declare-styleable>
+</resources>
